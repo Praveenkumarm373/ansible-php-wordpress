@@ -1,0 +1,10 @@
+---
+# tasks file for php
+- include_tasks: centos.yml
+  when: ansible_distribution == "CentOS"
+- include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+- include_tasks: chocolatey.yml 
+  when: ansible_distribution == "Microsoft Windows 10 Pro" 
+- include_tasks: windows.yml
+  when: ansible_distribution == "Microsoft Windows 10 Pro"

@@ -1,0 +1,61 @@
+---
+# tasks file for server
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  become: yes
+
+- name: Install required software
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - apache2
+    - mysql-server
+    - php7.2-mysql
+    - php7.2
+    - libapache2-mod-php7.2
+    - python-mysqldb
+
+- name: Install php extensions
+  apt: name={{ item }} state=present
+  become: yes
+  with_items:
+    - php7.2-gd 
+    - php7.2-ssh2
+
+- name: Copy .my.cnf to nodes
+  copy: src=/etc/ansible/php/.my.cnf1 dest=/root/.my.cnf
+
+- name: Create mysql database
+  mysql_db: name=wordpressdb state=present
+
+- name: Create mysql user
+  mysql_user: 
+    name=root
+    password=wordpress
+    priv=*.*:ALL
+
+- name: Download WordPress
+  get_url: url=https://www.wordpress.org/latest.tar.gz dest=/opt/wordpress.tar.gz validate_certs=no
+
+- name: Extract WordPress
+  unarchive: src=/opt/wordpress.tar.gz dest=/var/www/ copy=no
+  become: yes
+- name: Update default Apache site
+  become: yes
+  lineinfile: 
+    dest=/etc/apache2/sites-enabled/000-default.conf 
+    regexp="(.)+DocumentRoot /var/www/html"
+    line="DocumentRoot /var/www/wordpress"
+
+- name: restart apache
+  service: name=apache2 state=restarted
+  become: yes
+
+- name: Send config file
+  copy: src=/etc/ansible/php/wp-config.php dest=/var/www/wordpress/wp-config.php mode=0644
+
+#- name: restart apache
+#  service: name=apache2 state=restarted
+#  become: yes
+
+

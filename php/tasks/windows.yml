@@ -1,0 +1,142 @@
+---
+
+- name: stop mysql
+  win_command: powershell.exe C:\Windows\System32\net stop mysql
+
+- name: stop wd
+  win_command: powershell.exe C:\Apache24\bin\httpd -k stop
+
+- name: stop wd
+  win_command: powershell.exe C:\Apache24\bin\httpd -k uninstall
+
+- name: delete vv.zip
+  win_file:
+     path: C:\vv.zip
+     state: absent
+
+- name: delete ms.zip
+  win_file:
+     path: C:\ms.zip
+     state: absent
+
+- name: Send vcruntime140.dll file
+  win_copy: src=/etc/ansible/php/vv.zip dest=C:\
+
+- name: Send msvcr110.dll file
+  win_copy: src=/etc/ansible/php/ms.zip dest=C:\
+
+- name: install wget
+  win_command: powershell.exe choco install wget -y
+
+- name: install unzip
+  win_command: powershell.exe choco install unzip -y
+
+- name: delete apache
+  win_file: 
+     path: C:\Users\zippyops\Downloads\httpd-2.4.39-win64-VC15.zip 
+     state: absent
+
+- name: download apache
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\wget -P C:\Users\zippyops\Downloads https://home.apache.org/~steffenal/VC15/binaries/httpd-2.4.39-win64-VC15.zip 
+
+- name: rmdir apache
+  win_file: 
+     path: C:\Apache24 
+     state: absent
+
+- name: rmdir httpd
+  win_file: 
+     path: C:\Users\zippyops\Downloads\httpd 
+     state: absent
+
+- name: mkdir apache
+  win_file: 
+     path: C:\Users\zippyops\Downloads\httpd 
+     state: directory
+
+- name: unzip apache
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\Users\zippyops\Downloads\httpd-2.4.39-win64-VC15.zip -d C:\Users\zippyops\Downloads\httpd
+
+- name: move apache
+  win_command: powershell.exe move C:\Users\zippyops\Downloads\httpd\Apache24 C:\
+
+- name: delete htdocs
+  win_file: 
+     path: C:\Apache24\htdocs\index.html 
+     state: absent
+
+- name: unzip apache
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\vv.zip -d C:\Apache24\bin\
+
+
+- name: Send httpd.conf file
+  win_copy: src=/etc/ansible/php/httpd.conf dest=C:\Apache24\conf\httpd.conf
+
+- name: delete mariadb
+  win_file: 
+     path: C:\Users\zippyops\Downloads\mariadb-10.3.13-winx64.zip 
+     state: absent
+
+- name: remove dir mariadb
+  win_file: 
+     path: C:\mariadb-10.3.13-winx64 
+     state: absent
+
+- name: download mariadb
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\wget -P C:\Users\zippyops\Downloads https://downloads.mariadb.com/MariaDB/mariadb-10.3.13/winx64-packages/mariadb-10.3.13-winx64.zip
+
+- name: unzip mariadb
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\Users\zippyops\Downloads\mariadb-10.3.13-winx64.zip -d C:\
+
+- name: install mariadb
+  win_command: powershell.exe C:\mariadb-10.3.13-winx64\bin\mysqld --install
+
+- name: start mysql
+  win_command: powershell.exe C:\Windows\System32\net start mysql
+
+- name: delete php
+  win_file: 
+     path: C:\Users\zippyops\Downloads\php-5.6.40-Win32-VC11-x64.zip 
+     state: absent
+
+- name: download php
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\wget -P C:\Users\zippyops\Downloads https://windows.php.net/downloads/releases/php-5.6.40-Win32-VC11-x64.zip
+
+- name: rmdir php
+  win_file: 
+     path: C:\php 
+     state: absent
+
+- name: mkdir php
+  win_file: 
+     path: C:\php 
+     state: directory
+
+- name: unzip php
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\Users\zippyops\Downloads\php-5.6.40-Win32-VC11-x64.zip -d C:\php
+
+- name: Send php file
+  win_copy: src=/etc/ansible/php/php.ini dest=C:\php\php.ini
+
+- name: unzip apache
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\ms.zip -d C:\php\
+
+- name: delete wp
+  win_file: 
+     path: C:\Users\zippyops\Downloads\latest.zip
+     state: absent
+
+- name: download wp
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\wget -P C:\Users\zippyops\Downloads https://wordpress.org/latest.zip
+
+- name: unzip wd
+  win_command: powershell.exe C:\ProgramData\chocolatey\bin\unzip C:\Users\zippyops\Downloads\latest.zip -d C:\Apache24\htdocs
+
+- name: Send wp-config.php file
+  win_copy: src=/etc/ansible/php/wp-config-sample.php dest=C:\Apache24\htdocs\wordpress\wp-config.php
+
+- name: install wd
+  win_command: powershell.exe C:\Apache24\bin\httpd -k install
+
+- name: start wd
+  win_command: powershell.exe C:\Apache24\bin\httpd -k start
