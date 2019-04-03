@@ -3,10 +3,10 @@
 - name: stop mysql
   win_command: powershell.exe C:\Windows\System32\net stop mysql
 
-- name: stop wd
+- name: stop httpd
   win_command: powershell.exe C:\Apache24\bin\httpd -k stop
 
-- name: stop wd
+- name: uninstall httpd
   win_command: powershell.exe C:\Apache24\bin\httpd -k uninstall
 
 - name: delete vv.zip
@@ -135,8 +135,8 @@
 - name: Send wp-config.php file
   win_copy: src=/etc/ansible/php/wp-config-sample.php dest=C:\Apache24\htdocs\wordpress\wp-config.php
 
-- name: install wd
+- name: install httpd
   win_command: powershell.exe C:\Apache24\bin\httpd -k install
 
-- name: start wd
+- name: start httpd
   win_command: powershell.exe C:\Apache24\bin\httpd -k start
